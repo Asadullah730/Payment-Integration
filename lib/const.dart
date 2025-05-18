@@ -2,3 +2,5 @@ const PUBLISHABLE_KEY =
     'pk_test_51RPOxV07SCxi61Ud1LHYqJdN8XB6IwqHVXqD1kbCJ0H93NFgUmLlunmGatlZlVoo5Q7PJ1pqFm1p84qgNfoSb7Jb00P2Ik8jPf';
 const SECRET_Key =
     'sk_test_51RPOxV07SCxi61UdRlJ30SlrM1T0bLuGb7o69uOw6rgllXqTUlJzc7uUxudnwp8K9UEa5uIdqOu06HUHtLkf0sb100GwVvjDss';
+
+const GEMINI_KEY = 'AIzaSyBMRh9oM0-nByPORE2qdcFIuYCifaxUvbI';
