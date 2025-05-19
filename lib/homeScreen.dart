@@ -8,14 +8,9 @@ import 'package:payment_integration/GeminiChatbot/chatbot.dart';
 import 'package:payment_integration/const.dart';
 import 'package:payment_integration/stripeApi.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   double amount = 20;
   @override
   Widget build(BuildContext context) {
@@ -59,9 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const ChatbotScreen(),
-                  ),
+                  MaterialPageRoute(builder: (context) => ChatbotScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
