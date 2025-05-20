@@ -3,7 +3,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:payment_integration/TestHome.dart';
 import 'package:payment_integration/homeScreen.dart';
-import 'package:payment_integration/const.dart';
+import 'package:payment_integration/utils.dart/const.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,8 +15,6 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

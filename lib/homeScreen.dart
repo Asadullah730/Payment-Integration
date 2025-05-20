@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:payment_integration/GeminiChatbot/chatbot.dart';
-import 'package:payment_integration/const.dart';
+import 'package:payment_integration/utils.dart/const.dart';
 import 'package:payment_integration/stripeApi.dart';
 
 class HomeScreen extends StatelessWidget {

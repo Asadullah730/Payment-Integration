@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
-import 'package:payment_integration/const.dart';
+import 'package:payment_integration/utils.dart/const.dart';
 
 class StripeApiMethods {
   Map<String, dynamic>? paymentIntentData;
