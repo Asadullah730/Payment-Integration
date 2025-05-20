@@ -45,7 +45,7 @@ class StripeApiMethods {
   ) async {
     try {
       Map<String, dynamic> paymentInfo = {
-        'amount': (amountToBeCharge * 100).toInt().toString(), // ensure string
+        'amount': (amountToBeCharge * 100).toInt().toString(),
         'currency': currency,
         'payment_method_types[]': 'card',
       };
