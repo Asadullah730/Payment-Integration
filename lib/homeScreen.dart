@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
+import 'package:payment_integration/ChatGPT/chatgpt.dart';
 import 'package:payment_integration/GeminiChatbot/chatbot.dart';
 import 'package:payment_integration/utils.dart/const.dart';
 import 'package:payment_integration/stripeApi.dart';
@@ -60,6 +61,26 @@ class HomeScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
               child: Text(
                 'Gemini Chatbot',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(apiKey: OPENAI_API_KEY),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              child: Text(
+                'OPEN AI Chatbot',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

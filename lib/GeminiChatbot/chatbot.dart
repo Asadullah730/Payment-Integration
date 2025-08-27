@@ -1,10 +1,12 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class ChatbotScreen extends StatefulWidget {
   const ChatbotScreen({super.key});
@@ -16,6 +18,10 @@ class ChatbotScreen extends StatefulWidget {
 class _ChatbotScreenState extends State<ChatbotScreen> {
   final Gemini gemini = Gemini.instance;
   List<ChatMessage> messages = [];
+
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _speechText = "";
 
   ChatUser currentUser = ChatUser(
     id: '0',
@@ -30,12 +36,17 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   );
 
   @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Gemini Chat',
-
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -50,27 +61,89 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   Widget _buildUI() {
-    return DashChat(
-      inputOptions: InputOptions(
-        trailing: [
-          IconButton(
-            icon: const Icon(Icons.image),
-            onPressed: () {
-              _sendMedia();
-            },
+    return Stack(
+      children: [
+        DashChat(
+          inputOptions: InputOptions(
+            alwaysShowSend: true,
+            leading: [
+              IconButton(icon: const Icon(Icons.image), onPressed: _sendMedia),
+            ],
+            autocorrect: true,
+            cursorStyle: CursorStyle(color: Colors.blue),
           ),
-        ],
-      ),
-      currentUser: currentUser,
-      onSend: _onSendMessage,
-      messages: messages,
+          currentUser: currentUser,
+          onSend: _onSendMessage,
+          messages: messages,
+        ),
+        Positioned(
+          bottom: 7,
+          right: 45,
+          child: IconButton(
+            icon: Icon(
+              _isListening ? Icons.mic : Icons.mic_none,
+              color: _isListening ? Colors.green : Colors.red,
+            ),
+            onPressed: _listen,
+          ),
+        ),
+      ],
     );
+  }
+
+  /// Speech Recognition Start/Stop
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (status) {
+          if (kDebugMode) print("STATUS: $status");
+          if (status == "done") {
+            setState(() {
+              _isListening = false;
+            });
+          }
+        },
+        onError: (error) {
+          if (kDebugMode) print("ERROR: $error");
+          setState(() {
+            _isListening = false;
+          });
+        },
+      );
+
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) {
+            setState(() {
+              _speechText = val.recognizedWords;
+            });
+
+            // Automatically put recognized text into input
+            if (val.finalResult && _speechText.isNotEmpty) {
+              ChatMessage msg = ChatMessage(
+                user: currentUser,
+                createdAt: DateTime.now(),
+                text: _speechText,
+              );
+              _onSendMessage(msg);
+            }
+          },
+        );
+      } else {
+        if (kDebugMode) print("Speech recognition not available");
+      }
+    } else {
+      _speech.stop();
+      setState(() => _isListening = false);
+    }
   }
 
   void _onSendMessage(ChatMessage chatmessage) {
     setState(() {
       messages = [chatmessage, ...messages];
     });
+
     List<Uint8List>? image;
     if (chatmessage.medias != null && chatmessage.medias!.isNotEmpty) {
       image = [File(chatmessage.medias!.first.url).readAsBytesSync()];
@@ -92,10 +165,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           },
           onDone: () {
             String fullResponse = responseBuffer.toString().trim();
-
-            if (kDebugMode) {
-              print("Gemini full response: $fullResponse");
-            }
+            if (kDebugMode) print("Gemini full response: $fullResponse");
 
             ChatMessage newMessage = ChatMessage(
               user: geminiUser,
@@ -108,15 +178,13 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
             });
           },
           onError: (e) {
-            if (kDebugMode) {
+            if (kDebugMode)
               print("ERROR WHILE USER SEND MESSAGE : ${e.toString()}");
-            }
           },
         );
   }
 
   void _sendMedia() async {
-    // Implement media sending functionality here
     ImagePicker imagePicker = ImagePicker();
     XFile? image = await imagePicker.pickImage(source: ImageSource.gallery);
     if (image != null) {
@@ -129,9 +197,9 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         ],
       );
       _onSendMessage(mediaMessage);
-      print("Selected image path: ${image.path}");
+      if (kDebugMode) print("Selected image path: ${image.path}");
     } else {
-      print("No image selected");
+      if (kDebugMode) print("No image selected");
     }
   }
 }

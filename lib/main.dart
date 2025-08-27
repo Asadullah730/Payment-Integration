@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:payment_integration/TestHome.dart';
+import 'package:payment_integration/GeminiChatbot/chatbot.dart';
 import 'package:payment_integration/homeScreen.dart';
 import 'package:payment_integration/utils.dart/const.dart';
 
@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomeScreen(),
+      // home: HomeScreen(),
+      home: ChatbotScreen(),
     );
   }
 }
